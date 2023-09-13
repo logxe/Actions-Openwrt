@@ -167,7 +167,7 @@ jobs:
         keep_minimum_runs: 3
 
     - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@v0.2
+      uses: dev-drprasad/delete-older-releases@v0.2.1
       if: github.event.inputs.upload_release == 'true' && !cancelled()
       with:
         keep_latest: 10
