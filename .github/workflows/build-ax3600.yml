@@ -84,6 +84,8 @@ jobs:
         # switch kernel to linux 5.10.187
         sed -i '/LINUX_VERSION-5.10/c\LINUX_VERSION-5.10 = .187' include/kernel-5.10
         sed -i '/LINUX_KERNEL_HASH-5.10/c\LINUX_KERNEL_HASH-5.10.187 = f69454210b3e9e00e8b8368aaa897d4ca59f8be3b85399a2fcaecbf17af98bbb' include/kernel-5.10
+        rm target/linux/generic/hack-5.10/994-mhi-use-irq-flags.patch
+        rm target/linux/generic/hack-5.10/995-add-support-for-forced-PM-resume.patch
         wget https://github.com/coolsnowwolf/lede/raw/5eda7bd5919d395da728c4110ba4f8be277c07bb/target/linux/ipq807x/patches-5.10/124-clk-ipq-support-for-resetting-multiple-bits.patch -P target/linux/ipq807x/patches-5.10/
         
     - name: Load custom configuration
