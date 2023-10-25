@@ -12,6 +12,7 @@ name: Build AX3600 OpenWrt
 
 permissions:
   contents: write
+  actions: write
 
 on:
   workflow_dispatch:
