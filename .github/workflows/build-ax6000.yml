@@ -146,7 +146,7 @@ jobs:
         echo "release_tag=$(date +"%Y.%m.%d")" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
         touch release.txt
-        echo "## Xiaomi AX3600 Stock "$(grep DISTRIB_REVISION= openwrt/package/lean/default-settings/files/zzz-default-settings | awk -F\' '{print $2}') >> release.txt
+        echo "## Xiaomi Redmi AX6000" >> release.txt
         md5sum ${{ env.FIRMWARE }}/* | awk -F'[ /]' '{print$14" "$1}' >> release.txt
         cat release.txt
 
