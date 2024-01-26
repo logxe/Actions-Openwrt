@@ -84,6 +84,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-accesscontrol=y
         CONFIG_PACKAGE_luci-app-ddns=y
         CONFIG_PACKAGE_luci-app-frpc=y
+        CONFIG_PACKAGE_luci-app-nlbwmon=y
         CONFIG_PACKAGE_luci-app-passwall=y
         CONFIG_PACKAGE_luci-app-smartdns=y
         CONFIG_PACKAGE_luci-app-ssr-plus=y
