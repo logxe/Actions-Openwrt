@@ -91,6 +91,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-statistics=y
         CONFIG_PACKAGE_luci-mod-dashboard=y
         CONFIG_PACKAGE_ddns-scripts-cloudflare=y
+        CONFIG_PACKAGE_coremark=y
         CONFIG_PACKAGE_iperf3=y
         EOT
         $GITHUB_WORKSPACE/$DIY_P2_SH
