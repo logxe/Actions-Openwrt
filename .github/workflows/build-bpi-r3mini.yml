@@ -79,8 +79,8 @@ jobs:
         cd openwrt
         [ -e $CONFIGS_DIR/$CONFIG_FILE ] &&  sed '/passwall\|ssr-plus\|vssr\|CONFIG_TARGET_PER_DEVICE_ROOTFS=\|mediatek_mt7986_DEVICE/d' $CONFIGS_DIR/$CONFIG_FILE > .config
         tee -a .config > /dev/null <<EOT
-        CONFIG_TARGET_DEVICE_mediatek_mt7986_DEVICE_BPI-R3MINI-EMMC=y
-        CONFIG_TARGET_DEVICE_PACKAGES_mediatek_mt7986_DEVICE_BPI-R3MINI-EMMC=""
+        CONFIG_TARGET_DEVICE_mediatek_mt7986_DEVICE_BPI-R3MINI-NAND=y
+        CONFIG_TARGET_DEVICE_PACKAGES_mediatek_mt7986_DEVICE_BPI-R3MINI-NAND=""
         CONFIG_PACKAGE_luci-app-accesscontrol=y
         CONFIG_PACKAGE_luci-app-ddns=y
         CONFIG_PACKAGE_luci-app-frpc=y
