@@ -81,6 +81,8 @@ jobs:
         tee -a .config > /dev/null <<EOT
         CONFIG_PACKAGE_luci-app-accesscontrol=y
         CONFIG_PACKAGE_luci-app-ddns=y
+        CONFIG_PACKAGE_luci-app-diskman=y
+        CONFIG_PACKAGE_luci-app-dockerman=y
         CONFIG_PACKAGE_luci-app-frpc=y
         CONFIG_PACKAGE_luci-app-passwall=y
         CONFIG_PACKAGE_luci-app-smartdns=y
@@ -130,7 +132,6 @@ jobs:
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
         cd openwrt/bin/targets/*/*
-        rm -rf packages *.json *.buildinfo *.itb *.manifest sha256sums
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
