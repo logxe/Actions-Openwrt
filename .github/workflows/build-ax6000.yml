@@ -79,15 +79,13 @@ jobs:
         cd openwrt
         [ -e $CONFIGS_DIR/$CONFIG_FILE ] &&  sed '/passwall\|ssr-plus\|vssr\|CONFIG_TARGET_PER_DEVICE_ROOTFS=\|mediatek_mt7986_DEVICE/d' $CONFIGS_DIR/$CONFIG_FILE > .config
         tee -a .config > /dev/null <<EOT
-        CONFIG_TARGET_DEVICE_mediatek_mt7986_DEVICE_xiaomi_redmi-router-ax6000=y
-        CONFIG_TARGET_DEVICE_PACKAGES_mediatek_mt7986_DEVICE_xiaomi_redmi-router-ax6000=""
+        CONFIG_TARGET_mediatek_mt7986_DEVICE_tplink_tl-xdr6086=y
         CONFIG_PACKAGE_luci-app-accesscontrol=y
         CONFIG_PACKAGE_luci-app-ddns=y
         CONFIG_PACKAGE_luci-app-frpc=y
         CONFIG_PACKAGE_luci-app-passwall=y
         CONFIG_PACKAGE_luci-app-smartdns=y
         CONFIG_PACKAGE_luci-app-ssr-plus=y
-        CONFIG_PACKAGE_luci-app-vlmcsd=y
         CONFIG_PACKAGE_ddns-scripts-cloudflare=y
         CONFIG_PACKAGE_coremark=y
         CONFIG_PACKAGE_iperf3=y
@@ -150,7 +148,7 @@ jobs:
         echo "release_tag=$(date +"%Y.%m.%d")" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
         touch release.txt
-        echo "## Xiaomi Redmi AX6000" >> release.txt
+        echo "## TP-Link TL-XDR6086" >> release.txt
         md5sum ${{ env.FIRMWARE }}/* | awk -F'[ /]' '{print$14" "$1}' >> release.txt
         cat release.txt
 
