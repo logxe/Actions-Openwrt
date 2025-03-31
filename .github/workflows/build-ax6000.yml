@@ -77,7 +77,7 @@ jobs:
       run: |
         chmod +x $DIY_P2_SH
         cd openwrt
-        [ -e $CONFIGS_DIR/$CONFIG_FILE ] &&  sed '/passwall\|ssr-plus\|vssr\|CONFIG_TARGET_PER_DEVICE_ROOTFS=\|mediatek_mt7986_DEVICE/d' $CONFIGS_DIR/$CONFIG_FILE > .config
+        [ -e $CONFIGS_DIR/$CONFIG_FILE ] &&  sed '/passwall\|ssr-plus\|vssr\|CONFIG_TARGET_PER_DEVICE_ROOTFS=\|mediatek_mt7986_DEVICE\|CONFIG_TARGET_MULTI_PROFILE=/d' $CONFIGS_DIR/$CONFIG_FILE > .config
         tee -a .config > /dev/null <<EOT
         CONFIG_TARGET_mediatek_mt7986_DEVICE_tplink_tl-xdr6086=y
         CONFIG_PACKAGE_luci-app-accesscontrol=y
