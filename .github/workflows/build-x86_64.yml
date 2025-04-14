@@ -76,12 +76,12 @@ jobs:
         wget https://downloads.immortalwrt.org/releases/24.10.0/targets/x86/64/immortalwrt-toolchain-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst
         tar axf immortalwrt-toolchain-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst
         rm immortalwrt-toolchain-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst
+        ./scripts/ext-toolchain.sh --toolchain /workdir/openwrt/immortalwrt-toolchain-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64/toolchain-x86_64_gcc-13.3.0_musl/ --config x86/64
         
     - name: Load custom configuration
       run: |
         chmod +x $DIY_P2_SH
         cd openwrt
-        ./scripts/ext-toolchain.sh --toolchain immortalwrt-toolchain-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64/toolchain-x86_64_gcc-13.3.0_musl/ --config x86/64
         tee -a .config > /dev/null <<EOT
         CONFIG_PACKAGE_luci-app-accesscontrol=y
         CONFIG_PACKAGE_luci-app-aria2=y
