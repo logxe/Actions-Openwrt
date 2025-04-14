@@ -50,6 +50,7 @@ jobs:
         sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004)
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
+        sudo apt-get install zstd -y
         sudo -E git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
@@ -70,7 +71,12 @@ jobs:
 #        $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Update & Install feeds
-      run: cd openwrt && ./scripts/feeds update -a && ./scripts/feeds install -a
+      run: |
+        cd openwrt && ./scripts/feeds update -a && ./scripts/feeds install -a
+        wget https://downloads.immortalwrt.org/releases/24.10.0/targets/x86/64/immortalwrt-toolchain-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst
+        tar axf immortalwrt-toolchain-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst
+        rm immortalwrt-toolchain-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst
+        ./scripts/ext-toolchain.sh --toolchain ~/openwrt/immortalwrt-toolchain*/toolchain-*/ --config x86/64
         
     - name: Load custom configuration
       run: |
