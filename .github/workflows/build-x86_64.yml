@@ -46,7 +46,6 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
       run: |
         sudo -E apt-get update -y
-        sudo -E apt-get full-upgrade -y
         sudo -E apt-get install zstd -y
         sudo -E apt-get install -y $(curl -fsSL https://tinyurl.com/ubuntu2204-make-openwrt)
         sudo -E apt-get autoremove --purge
