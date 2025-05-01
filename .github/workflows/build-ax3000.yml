@@ -36,7 +36,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout
@@ -48,7 +48,7 @@ jobs:
       run: |
         sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
         sudo -E apt-get -qq update
-        sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004)
+        sudo -E apt-get -qq install $(curl -fsSL https://tinyurl.com/ubuntu2204-make-openwrt)
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo -E git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
@@ -79,12 +79,24 @@ jobs:
         cd openwrt
         [ -e $CONFIGS_DIR/$CONFIG_FILE ] &&  sed '/passwall\|ssr-plus\|vssr\|CONFIG_TARGET_PER_DEVICE_ROOTFS=\|mediatek_mt7981_DEVICE/d' $CONFIGS_DIR/$CONFIG_FILE > .config
         tee -a .config > /dev/null <<EOT
-        CONFIG_TARGET_DEVICE_mediatek_mt7981_DEVICE_mt7981-360-t7-108M=y
-        CONFIG_TARGET_DEVICE_PACKAGES_mediatek_mt7981_DEVICE_mt7981-360-t7-108M=""
+        CONFIG_TARGET_mediatek_mt7981_DEVICE_newland_nl-wr8103=y
         CONFIG_PACKAGE_luci-app-accesscontrol=y
         CONFIG_PACKAGE_luci-app-ddns=y
         CONFIG_PACKAGE_luci-app-frpc=y
         CONFIG_PACKAGE_luci-app-passwall=y
+        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Haproxy is not set
+        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Hysteria is not set
+        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_NaiveProxy is not set
+        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Client is not set
+        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Server is not set
+        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Simple_Obfs is not set
+        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_SingBox is not set
+        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_tuic_client is not set
+        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Geodata is not set
+        CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Geoview=y
+        CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Plugin=y
+        CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray=y
+        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray_Plugin is not set
         CONFIG_PACKAGE_luci-app-smartdns=y
         CONFIG_PACKAGE_luci-app-ssr-plus=y
         CONFIG_PACKAGE_luci-app-vlmcsd=y
