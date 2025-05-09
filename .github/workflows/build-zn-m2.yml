@@ -98,7 +98,7 @@ jobs:
         -e '/CONFIG_PACKAGE_kmod-cfg80211=y/c\# CONFIG_PACKAGE_kmod-cfg80211 is not set' \
         -e '/CONFIG_PACKAGE_kmod-mac80211=y/c\# CONFIG_PACKAGE_kmod-mac80211 is not set' \
         -e '/CONFIG_PACKAGE_hostapd-common=y/c\# CONFIG_PACKAGE_hostapd-common is not set' \
-         -e '/CONFIG_PACKAGE_wpad-mesh-openssl=y/c\# CONFIG_PACKAGE_wpad-mesh-openssl is not set' \
+         -e '/CONFIG_PACKAGE_wpad-openssl=y/c\# CONFIG_PACKAGE_wpad-openssl is not set' \
         .config
 
     - name: Load custom configuration
