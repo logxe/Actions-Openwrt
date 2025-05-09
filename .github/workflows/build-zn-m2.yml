@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build ZN M2 ImmortalWrt with NSS
+name: Build ImmortalWrt For ZN M2 with Qualcommax NSS
 
 permissions:
   contents: write
@@ -88,7 +88,7 @@ jobs:
         sed -i \
         -e '/CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_zn_m2/c\CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_zn_m2=y' \
         -e '/CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_8devices_mango-dvk/d' \
-        -e '/CONFIG_DEFAULT_ipq-wifi-8devices_mango/d' \
+        -e '/CONFIG_PACKAGE_ipq-wifi-8devices_mango=y/d' \
         -e '/CONFIG_PACKAGE_ath11k-firmware-ipq6018=y/c\# CONFIG_PACKAGE_ath11k-firmware-ipq6018 is not set' \
         -e '/CONFIG_PACKAGE_kmod-ath=y/c\# CONFIG_PACKAGE_kmod-ath is not set' \
         -e '/CONFIG_PACKAGE_kmod-ath11k=y/c\# CONFIG_PACKAGE_kmod-ath11k is not set' \
@@ -98,7 +98,9 @@ jobs:
         -e '/CONFIG_PACKAGE_kmod-cfg80211=y/c\# CONFIG_PACKAGE_kmod-cfg80211 is not set' \
         -e '/CONFIG_PACKAGE_kmod-mac80211=y/c\# CONFIG_PACKAGE_kmod-mac80211 is not set' \
         -e '/CONFIG_PACKAGE_hostapd-common=y/c\# CONFIG_PACKAGE_hostapd-common is not set' \
-         -e '/CONFIG_PACKAGE_wpad-openssl=y/c\# CONFIG_PACKAGE_wpad-openssl is not set' \
+        -e '/CONFIG_PACKAGE_wpad-openssl=y/c\# CONFIG_PACKAGE_wpad-openssl is not set' \
+        -e '/CONFIG_PACKAGE_wifi-scripts=y/c\# CONFIG_PACKAGE_wifi-scripts is not set' \
+        -e '/CONFIG_PACKAGE_wireless-regdb=y/c\# CONFIG_PACKAGE_wireless-regdb is not set' \
         .config
 
     - name: Load custom configuration
@@ -161,7 +163,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: openwrt_bin-${{ env.DEVICE_NAME }}-${{ env.FILE_DATE }}
+        name: OpenWrt_bin-${{ env.DEVICE_NAME }}-${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Organize files
@@ -176,7 +178,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: immortalwrt_${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
+        name: immortalwrt-${{ env.DEVICE_NAME }}-${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Generate release tag
