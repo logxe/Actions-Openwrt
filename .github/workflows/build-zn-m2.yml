@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build ImmortalWrt For ZN M2 with Qualcommax NSS
+name: Build ZN M2 ImmortalWrt with NSS
 
 permissions:
   contents: write
