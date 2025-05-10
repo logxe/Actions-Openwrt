@@ -86,6 +86,7 @@ jobs:
       run: |
         cd openwrt  
         sed -i \
+        -e '/CONFIG_PACKAGE_default-settings-chn is not set/c\CONFIG_PACKAGE_default-settings-chn=y' \
         -e '/CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_zn_m2/c\CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_zn_m2=y' \
         -e '/CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_8devices_mango-dvk/d' \
         -e '/CONFIG_PACKAGE_ipq-wifi-8devices_mango=y/d' \
