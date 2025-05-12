@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build ImmortalWrt Aliyun AP8220 with NSS
+name: Build AP8220 ImmortalWrt with NSS
 
 permissions:
   contents: write
