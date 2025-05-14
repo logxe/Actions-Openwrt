@@ -85,7 +85,7 @@ jobs:
       run: |
         cd openwrt  
         sed -i \
-        -e '/# CONFIG_PACKAGE_default-settings-chn is not set/c\CONFIG_PACKAGE_default-settings-chn=y' \
+        -e '/CONFIG_PACKAGE_default-settings-chn is not set/c\CONFIG_PACKAGE_default-settings-chn=y' \
         -e '/CONFIG_PACKAGE_ath11k-firmware-ipq8074=y/c\# CONFIG_PACKAGE_ath11k-firmware-ipq8074 is not set' \
         -e '/CONFIG_PACKAGE_kmod-ath=y/c\# CONFIG_PACKAGE_kmod-ath is not set' \
         -e '/CONFIG_PACKAGE_kmod-ath11k=y/c\# CONFIG_PACKAGE_kmod-ath11k is not set' \
