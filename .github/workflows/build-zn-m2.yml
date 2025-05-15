@@ -86,11 +86,11 @@ jobs:
         -e '/CONFIG_PACKAGE_default-settings-chn is not set/c\CONFIG_PACKAGE_default-settings-chn=y' \
         -e '/CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_zn_m2/c\CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_zn_m2=y' \
         -e '/CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_8devices_mango-dvk/d' \
+        -e '/CONFIG_ATH11K_NSS_SUPPORT=y/c\# CONFIG_ATH11K_NSS_SUPPORT is not set' \
         -e '/CONFIG_PACKAGE_ipq-wifi-8devices_mango=y/d' \
         -e '/CONFIG_PACKAGE_ath11k-firmware-ipq6018=y/d' \
         -e '/CONFIG_PACKAGE_kmod-ath=y/c\# CONFIG_PACKAGE_kmod-ath is not set' \
         -e '/CONFIG_PACKAGE_kmod-ath11k=y/c\# CONFIG_PACKAGE_kmod-ath11k is not set' \
-        -e '/ATH11K_NSS_SUPPORT=y/c\# CONFIG_ATH11K_NSS_SUPPORT is not set' \
         -e '/CONFIG_PACKAGE_kmod-ath11k-ahb=y/c\# CONFIG_PACKAGE_kmod-ath11k-ahb is not set' \
         -e '/CONFIG_PACKAGE_kmod-ath11k-pci=y/c\# CONFIG_PACKAGE_kmod-ath11k-pci is not set' \
         -e '/CONFIG_PACKAGE_kmod-cfg80211=y/c\# CONFIG_PACKAGE_kmod-cfg80211 is not set' \
@@ -99,6 +99,9 @@ jobs:
         -e '/CONFIG_PACKAGE_wpad-openssl=y/c\# CONFIG_PACKAGE_wpad-openssl is not set' \
         -e '/CONFIG_PACKAGE_wifi-scripts=y/c\# CONFIG_PACKAGE_wifi-scripts is not set' \
         -e '/CONFIG_PACKAGE_wireless-regdb=y/c\# CONFIG_PACKAGE_wireless-regdb is not set' \
+        -e '/CONFIG_PACKAGE_kmod-usb-dwc3=y/c\# CONFIG_PACKAGE_kmod-usb-dwc3 is not set' \
+        -e '/CONFIG_PACKAGE_kmod-usb-dwc3-qcom=y/c\# CONFIG_PACKAGE_kmod-usb-dwc3-qcom is not set' \
+        -e '/CONFIG_PACKAGE_kmod-usb3=y/c\# CONFIG_PACKAGE_kmod-usb3 is not set' \
         .config
 
     - name: Load custom configuration
