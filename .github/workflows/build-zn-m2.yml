@@ -72,12 +72,7 @@ jobs:
     - name: Update & Install feeds
       run: |
         cd openwrt && ./scripts/feeds update -a && ./scripts/feeds install -a
-        
-    - name: Custom Prebuild Toolchain
-      run: |
-        cd openwrt
-        curl -L https://downloads.immortalwrt.org/releases/24.10.0/targets/qualcommax/ipq807x/immortalwrt-toolchain-24.10.0-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst | zstd -d | tar -x
-        ./scripts/ext-toolchain.sh --toolchain /workdir/openwrt/immortalwrt-toolchain-24.10.0-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64/toolchain-aarch64_cortex-a53_gcc-13.3.0_musl/ --config qualcommax/ipq60xx
+        make defconfig
 
     - name: Remove wireless config
       run: |
@@ -110,20 +105,6 @@ jobs:
         CONFIG_PACKAGE_luci-app-ddns=y
         CONFIG_PACKAGE_luci-app-frpc=y
         CONFIG_PACKAGE_luci-app-openclash=y
-        CONFIG_PACKAGE_luci-app-passwall=y
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Haproxy is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Hysteria is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_NaiveProxy is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Client is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Server is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Simple_Obfs is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_SingBox is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_tuic_client is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Geodata is not set
-        CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Geoview=y
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Plugin=y
-        CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray=y
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray_Plugin is not set
         CONFIG_PACKAGE_luci-app-smartdns=y
         CONFIG_PACKAGE_luci-app-upnp=y
         CONFIG_PACKAGE_luci-app-wol=y
