@@ -99,9 +99,6 @@ jobs:
         -e '/CONFIG_PACKAGE_wpad-openssl=y/c\# CONFIG_PACKAGE_wpad-openssl is not set' \
         -e '/CONFIG_PACKAGE_wifi-scripts=y/c\# CONFIG_PACKAGE_wifi-scripts is not set' \
         -e '/CONFIG_PACKAGE_wireless-regdb=y/c\# CONFIG_PACKAGE_wireless-regdb is not set' \
-        -e '/CONFIG_PACKAGE_kmod-usb-dwc3=y/c\# CONFIG_PACKAGE_kmod-usb-dwc3 is not set' \
-        -e '/CONFIG_PACKAGE_kmod-usb-dwc3-qcom=y/c\# CONFIG_PACKAGE_kmod-usb-dwc3-qcom is not set' \
-        -e '/CONFIG_PACKAGE_kmod-usb3=y/c\# CONFIG_PACKAGE_kmod-usb3 is not set' \
         .config
 
     - name: Load custom configuration
