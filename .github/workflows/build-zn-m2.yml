@@ -26,7 +26,7 @@ on:
 env:
   REPO_URL: https://github.com/VIKINGYFY/immortalwrt
   REPO_BRANCH: main
-  FEEDS_CONF: feeds.conf.default
+  CONFIG_FILE: zn-m2-no-wifi.config
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
@@ -62,62 +62,21 @@ jobs:
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
-#    - name: Load custom feeds
-#      run: |
-#        [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
-#        chmod +x $DIY_P1_SH
-#        cd openwrt
-#        $GITHUB_WORKSPACE/$DIY_P1_SH
+    - name: Load custom feeds
+      run: |
+        chmod +x $DIY_P1_SH
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Update & Install feeds
       run: |
         cd openwrt && ./scripts/feeds update -a && ./scripts/feeds install -a
-        make defconfig
-
-    - name: Remove wireless config
-      run: |
-        cd openwrt  
-        sed -i \
-        -e '/CONFIG_PACKAGE_default-settings-chn is not set/c\CONFIG_PACKAGE_default-settings-chn=y' \
-        -e '/CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_zn_m2/c\CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_zn_m2=y' \
-        -e '/CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_8devices_mango-dvk/d' \
-        -e '/CONFIG_ATH11K_NSS_SUPPORT=y/c\# CONFIG_ATH11K_NSS_SUPPORT is not set' \
-        -e '/CONFIG_PACKAGE_ipq-wifi-8devices_mango=y/d' \
-        -e '/CONFIG_PACKAGE_ath11k-firmware-ipq6018=y/d' \
-        -e '/CONFIG_PACKAGE_kmod-ath=y/c\# CONFIG_PACKAGE_kmod-ath is not set' \
-        -e '/CONFIG_PACKAGE_kmod-ath11k=y/c\# CONFIG_PACKAGE_kmod-ath11k is not set' \
-        -e '/CONFIG_PACKAGE_kmod-ath11k-ahb=y/c\# CONFIG_PACKAGE_kmod-ath11k-ahb is not set' \
-        -e '/CONFIG_PACKAGE_kmod-ath11k-pci=y/c\# CONFIG_PACKAGE_kmod-ath11k-pci is not set' \
-        -e '/CONFIG_PACKAGE_kmod-cfg80211=y/c\# CONFIG_PACKAGE_kmod-cfg80211 is not set' \
-        -e '/CONFIG_PACKAGE_kmod-mac80211=y/c\# CONFIG_PACKAGE_kmod-mac80211 is not set' \
-        -e '/CONFIG_PACKAGE_hostapd-common=y/c\# CONFIG_PACKAGE_hostapd-common is not set' \
-        -e '/CONFIG_PACKAGE_wpad-openssl=y/c\# CONFIG_PACKAGE_wpad-openssl is not set' \
-        -e '/CONFIG_PACKAGE_wifi-scripts=y/c\# CONFIG_PACKAGE_wifi-scripts is not set' \
-        -e '/CONFIG_PACKAGE_wireless-regdb=y/c\# CONFIG_PACKAGE_wireless-regdb is not set' \
-        .config
 
     - name: Load custom configuration
       run: |
+        [ -e configs/$CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
-        cd openwrt
-        tee -a .config > /dev/null <<EOT
-        CONFIG_PACKAGE_luci-app-accesscontrol=y
-        CONFIG_PACKAGE_luci-app-ddns=y
-        CONFIG_PACKAGE_luci-app-frpc=y
-        CONFIG_PACKAGE_luci-app-openclash=y
-        CONFIG_PACKAGE_luci-app-smartdns=y
-        CONFIG_PACKAGE_luci-app-upnp=y
-        CONFIG_PACKAGE_luci-app-wol=y
-        CONFIG_PACKAGE_luci-proto-wireguard=y
-        CONFIG_PACKAGE_bind-dig=y
-        CONFIG_PACKAGE_coremark=y
-        CONFIG_PACKAGE_ddns-scripts-cloudflare=y
-        CONFIG_PACKAGE_iperf3=y
-        CONFIG_PACKAGE_libffi=y
-        CONFIG_PACKAGE_qrencode=y
-        EOT
         $GITHUB_WORKSPACE/$DIY_P2_SH
-        sed -i 's/192.168.[0-9].1/192.168.2.1/g' package/base-files/files/bin/config_generate
         make defconfig
 
     - name: Download package
