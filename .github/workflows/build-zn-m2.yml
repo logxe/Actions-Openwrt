@@ -109,6 +109,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-accesscontrol=y
         CONFIG_PACKAGE_luci-app-ddns=y
         CONFIG_PACKAGE_luci-app-frpc=y
+        CONFIG_PACKAGE_luci-app-openclash=y
         CONFIG_PACKAGE_luci-app-passwall=y
         # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Haproxy is not set
         # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Hysteria is not set
@@ -128,9 +129,10 @@ jobs:
         CONFIG_PACKAGE_luci-app-wol=y
         CONFIG_PACKAGE_luci-proto-wireguard=y
         CONFIG_PACKAGE_bind-dig=y
-        CONFIG_PACKAGE_ddns-scripts-cloudflare=y
         CONFIG_PACKAGE_coremark=y
+        CONFIG_PACKAGE_ddns-scripts-cloudflare=y
         CONFIG_PACKAGE_iperf3=y
+        CONFIG_PACKAGE_libffi=y
         CONFIG_PACKAGE_qrencode=y
         EOT
         $GITHUB_WORKSPACE/$DIY_P2_SH
