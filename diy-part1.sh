@@ -22,4 +22,3 @@ rm -rf feeds/packages/net/v2ray-geodata
 rm -rf feeds/packages/net/mosdns
 git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
 git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
-echo "CONFIG_PACKAGE_luci-app-mosdns=y" >> ".config"
