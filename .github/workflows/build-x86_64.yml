@@ -46,73 +46,37 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
       run: |
         sudo -E apt-get -qq update
-        sudo -E apt-get -qq install zstd
         sudo -E apt-get -qq install $(curl -fsSL https://tinyurl.com/ubuntu2204-make-openwrt)
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo -E git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
         sudo timedatectl set-timezone "$TZ"
-        sudo mkdir -p /workdir
-        sudo chown $USER:$GROUPS /workdir
+        sudo mkdir -p /mnt/workdir
+        sudo chown $USER:$GROUPS /mnt/workdir
 
     - name: Clone source code
-      working-directory: /workdir
+      working-directory: /mnt/workdir
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
-        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+        ln -sf /mnt/workdir/openwrt $GITHUB_WORKSPACE/openwrt
 
-#    - name: Load custom feeds
-#      run: |
-#        [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
-#        chmod +x $DIY_P1_SH
-#        cd openwrt
-#        $GITHUB_WORKSPACE/$DIY_P1_SH
+    - name: Load custom feeds
+      run: |
+        chmod +x $DIY_P1_SH
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Update & Install feeds
       run: |
         cd openwrt && ./scripts/feeds update -a && ./scripts/feeds install -a
-        wget https://downloads.immortalwrt.org/releases/24.10.0/targets/x86/64/immortalwrt-toolchain-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst
-        tar axf immortalwrt-toolchain-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst
-        rm immortalwrt-toolchain-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst
-        ./scripts/ext-toolchain.sh --toolchain /workdir/openwrt/immortalwrt-toolchain-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64/toolchain-x86_64_gcc-13.3.0_musl/ --config x86/64
-        
+
     - name: Load custom configuration
       run: |
+        [ -e configs/$CONFIG_FILE ] && mv configs/$CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
         cd openwrt
-        tee -a .config > /dev/null <<EOT
-        CONFIG_PACKAGE_luci-app-accesscontrol=y
-        CONFIG_PACKAGE_luci-app-aria2=y
-        CONFIG_PACKAGE_luci-app-ddns=y
-        CONFIG_PACKAGE_luci-app-diskman=y
-        CONFIG_PACKAGE_luci-app-frpc=y
-        CONFIG_PACKAGE_luci-app-passwall=y
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Haproxy is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Hysteria is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_NaiveProxy is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Client is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Server is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Simple_Obfs is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_SingBox is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_tuic_client is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Geodata is not set
-        CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Geoview=y
-        CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Plugin=y
-        CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray=y
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray_Plugin is not set
-        CONFIG_PACKAGE_luci-app-smartdns=y
-        CONFIG_PACKAGE_luci-app-upnp=y
-        CONFIG_PACKAGE_luci-app-vlmcsd=y
-        CONFIG_PACKAGE_luci-proto-wireguard=y
-        CONFIG_PACKAGE_bind-dig=y
-        CONFIG_PACKAGE_ddns-scripts-cloudflare=y
-        CONFIG_PACKAGE_coremark=y
-        CONFIG_PACKAGE_iperf3=y
-        CONFIG_PACKAGE_qrencode=y
-        EOT
         $GITHUB_WORKSPACE/$DIY_P2_SH
-        sed -i 's/192.168.[0-9].1/192.168.2.1/g' package/base-files/files/bin/config_generate
         make defconfig
 
     - name: Download package
@@ -127,10 +91,12 @@ jobs:
       id: compile
       run: |
         cd openwrt
+         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
+        [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
+        echo "FILE_DATE=$(date +"%Y%m%d")" >> $GITHUB_ENV
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
-        echo "FILE_DATE=$(date +"%Y%m%d")" >> $GITHUB_ENV
 
     - name: Check space usage
       if: (!cancelled())
@@ -140,7 +106,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: openwrt_bin-${{ env.DEVICE_NAME }}-${{ env.FILE_DATE }}
+        name: OpenWrt_bin-${{ env.DEVICE_NAME }}-${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Organize files
@@ -155,7 +121,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: immortalwrt_${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
+        name: immortalwrt-${{ env.DEVICE_NAME }}-${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Generate release tag
@@ -165,7 +131,7 @@ jobs:
         echo "release_tag=$(date +"%Y.%m.%d")" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
         touch release.txt
-        echo "## x86_64" >> release.txt
+        echo "## ZN M2" >> release.txt
         md5sum ${{ env.FIRMWARE }}/* | awk -F'[ /]' '{print$14" "$1}' >> release.txt
         cat release.txt
 
