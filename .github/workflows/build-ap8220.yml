@@ -26,6 +26,7 @@ on:
 env:
   REPO_URL: https://github.com/VIKINGYFY/immortalwrt
   REPO_BRANCH: main
+  CONFIG_FILE: ap8220.config
   FEEDS_CONF: feeds.conf.default
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
@@ -76,62 +77,16 @@ jobs:
     - name: Custom Prebuild Toolchain
       run: |
         cd openwrt
-        curl -L https://downloads.immortalwrt.org/releases/24.10.0/targets/qualcommax/ipq807x/immortalwrt-toolchain-24.10.0-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst | zstd -d | tar -x
-        ./scripts/ext-toolchain.sh --toolchain /mnt/workdir/openwrt/immortalwrt-toolchain-24.10.0-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64/toolchain-aarch64_cortex-a53_gcc-13.3.0_musl/ --config qualcommax/ipq807x
-
-    - name: Remove wireless config
-      run: |
-        cd openwrt  
-        sed -i \
-        -e '/CONFIG_PACKAGE_default-settings-chn is not set/c\CONFIG_PACKAGE_default-settings-chn=y' \
-        -e '/CONFIG_PACKAGE_ath11k-firmware-ipq8074=y/c\# CONFIG_PACKAGE_ath11k-firmware-ipq8074 is not set' \
-        -e '/CONFIG_PACKAGE_kmod-ath=y/c\# CONFIG_PACKAGE_kmod-ath is not set' \
-        -e '/CONFIG_PACKAGE_kmod-ath11k=y/c\# CONFIG_PACKAGE_kmod-ath11k is not set' \
-        -e '/ATH11K_NSS_SUPPORT=y/c\# CONFIG_ATH11K_NSS_SUPPORT is not set' \
-        -e '/CONFIG_PACKAGE_kmod-ath11k-ahb=y/c\# CONFIG_PACKAGE_kmod-ath11k-ahb is not set' \
-        -e '/CONFIG_PACKAGE_kmod-ath11k-pci=y/c\# CONFIG_PACKAGE_kmod-ath11k-pci is not set' \
-        -e '/CONFIG_PACKAGE_kmod-cfg80211=y/c\# CONFIG_PACKAGE_kmod-cfg80211 is not set' \
-        -e '/CONFIG_PACKAGE_kmod-mac80211=y/c\# CONFIG_PACKAGE_kmod-mac80211 is not set' \
-        -e '/CONFIG_PACKAGE_hostapd-common=y/c\# CONFIG_PACKAGE_hostapd-common is not set' \
-        -e '/CONFIG_PACKAGE_wpad-openssl=y/c\# CONFIG_PACKAGE_wpad-openssl is not set' \
-        -e '/CONFIG_PACKAGE_wifi-scripts=y/c\# CONFIG_PACKAGE_wifi-scripts is not set' \
-        -e '/CONFIG_PACKAGE_wireless-regdb=y/c\# CONFIG_PACKAGE_wireless-regdb is not set' \
-        .config
+        curl -L https://downloads.immortalwrt.org/releases/24.10-SNAPSHOT/targets/qualcommax/ipq807x/immortalwrt-toolchain-24.10-SNAPSHOT-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64.tar.zst | zstd -d | tar -x
+        ./scripts/ext-toolchain.sh --toolchain /mnt/workdir/openwrt/immortalwrt-toolchain-24.10-SNAPSHOT-qualcommax-ipq807x_gcc-13.3.0_musl.Linux-x86_64/toolchain-aarch64_cortex-a53_gcc-13.3.0_musl/ --overwrite-config --config qualcommax/ipq807x
 
     - name: Load custom configuration
       run: |
+        [ -e configs/$CONFIG_FILE ] && mv configs/$CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
         cd openwrt
-        tee -a .config > /dev/null <<EOT
-        CONFIG_PACKAGE_luci-app-accesscontrol=y
-        CONFIG_PACKAGE_luci-app-ddns=y
-        CONFIG_PACKAGE_luci-app-frpc=y
-        CONFIG_PACKAGE_luci-app-passwall=y
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Haproxy is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Hysteria is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_NaiveProxy is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Client is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Server is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Simple_Obfs is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_SingBox is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_tuic_client is not set
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Geodata is not set
-        CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Geoview=y
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Plugin=y
-        CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray=y
-        # CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray_Plugin is not set
-        CONFIG_PACKAGE_luci-app-smartdns=y
-        CONFIG_PACKAGE_luci-app-upnp=y
-        CONFIG_PACKAGE_luci-proto-wireguard=y
-        CONFIG_PACKAGE_luci-app-wol=y
-        CONFIG_PACKAGE_bind-dig=y
-        CONFIG_PACKAGE_ddns-scripts-cloudflare=y
-        CONFIG_PACKAGE_coremark=y
-        CONFIG_PACKAGE_iperf3=y
-        CONFIG_PACKAGE_qrencode=y
-        EOT
         $GITHUB_WORKSPACE/$DIY_P2_SH
-        sed -i 's/192.168.[0-9].1/192.168.2.1/g' package/base-files/files/bin/config_generate
+        #sed -i 's/192.168.[0-9].1/192.168.2.1/g' package/base-files/files/bin/config_generate
         make defconfig
 
     - name: Download package
